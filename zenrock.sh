@@ -49,7 +49,7 @@ eval $(echo 'export PATH=$PATH:$HOME/go/bin' | tee -a $HOME/.profile)
 sleep 1  
 #
 mkdir -p $HOME/.zrchain/cosmovisor/genesis/bin
-wget -O $HOME/.zrchain/cosmovisor/genesis/bin/zenrockd https://github.com/zenrocklabs/zrchain/releases/download/v5.3.4/zenrockd.zip
+wget -O $HOME/.zrchain/cosmovisor/genesis/bin/zenrockd https://releases.gardia.zenrocklabs.io/zenrockd-4.7.1
 chmod +x $HOME/.zrchain/cosmovisor/genesis/bin/zenrockd
 sudo ln -s $HOME/.zrchain/cosmovisor/genesis $HOME/.zrchain/cosmovisor/current -f
 sudo ln -s $HOME/.zrchain/cosmovisor/current/bin/zenrockd /usr/local/bin/zenrockd -f
