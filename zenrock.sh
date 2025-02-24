@@ -64,7 +64,7 @@ sleep 1
 go install cosmossdk.io/tools/cosmovisor/cmd/cosmovisor@v1.6.0
  
 sleep 1  
-sudo tee /etc/systemd/system/zenrock-testnet.service > /dev/null << EOF
+sudo tee /etc/systemd/system/zenrockd.service > /dev/null << EOF
 [Unit]
 Description=zenrock node service
 After=network-online.target
@@ -83,15 +83,16 @@ Environment="PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/
 [Install]
 WantedBy=multi-user.target
 EOF
+
 sudo systemctl daemon-reload
 sudo systemctl enable zenrock-testnet.service
 
 sleep 1  
 #
-zenrockd config set client chain-id gardia-2
+zenrockd config set client chain-id gardia-4
 zenrockd config set client keyring-backend test
 zenrockd config set client node tcp://localhost:${N_PORT}656
-zenrockd init $MONIKER --chain-id gardia-2
+zenrockd init $MONIKER --chain-id gardia-4
 
 sleep 1  
 #
@@ -100,14 +101,16 @@ curl -Ls https://docs.coinseyir.com/Zenrock/addrbook.json > $HOME/.zrchain/confi
 
 sleep 1  
 #
-sed -i -e "s|^seeds *=.*|seeds = \"3f472746f46493309650e5a033076689996c8881@zenrock-testnet.rpc.kjnodes.com:18259\"|" $HOME/.zrchain/config/config.toml
-sed -i -e "s|^minimum-gas-prices *=.*|minimum-gas-prices = \"20urock\"|" $HOME/.zrchain/config/app.toml
-sed -i \
-  -e 's|^pruning *=.*|pruning = "custom"|' \
-  -e 's|^pruning-keep-recent *=.*|pruning-keep-recent = "100"|' \
-  -e 's|^pruning-keep-every *=.*|pruning-keep-every = "0"|' \
-  -e 's|^pruning-interval *=.*|pruning-interval = "19"|' \
-  $HOME/.zrchain/config/app.toml
+SEEDS="50ef4dd630025029dde4c8e709878343ba8a27fa@zenrock-testnet-seed.itrocket.net:56656"
+PEERS="5458b7a316ab673afc34404e2625f73f0376d9e4@zenrock-testnet-peer.itrocket.net:11656,6ef43e8d5be8d0499b6c57eb15d3dd6dee809c1e@52.30.152.47:26656,63014f89cf325d3dc12cc8075c07b5f4ee666d64@34.246.15.243:26656,12f0463250bf004107195ff2c885be9b480e70e2@52.30.152.47:26656,8be4a95c784126a54599087f8bf40382fc0843ea@[2a03:cfc0:8000:13::b910:27be]:14156,1dfbd854bab6ca95be652e8db078ab7a069eae6f@52.30.152.47:26656,e1ff342fb55293384a5e92d4bd3bed82ecee4a60@65.108.234.158:26356,436d0f1b24e4231774b35e8bd924f6de9728007a@158.160.2.235:26656,ee7d09ac08dc61548d0e744b23e57436b8c477fc@65.109.93.152:26906,79a13243c16a31cd13aa14e8c441e5cd556ac617@65.109.22.211:26656,c2c5db24bb7aeb665cbf04c298ca53578043ceed@23.88.0.170:15671"
+sed -i -e "/^\[p2p\]/,/^\[/{s/^[[:space:]]*seeds *=.*/seeds = \"$SEEDS\"/}" \
+       -e "/^\[p2p\]/,/^\[/{s/^[[:space:]]*persistent_peers *=.*/persistent_peers = \"$PEERS\"/}" $HOME/.zrchain/config/config.toml
+sed -i -e "s/^pruning *=.*/pruning = \"custom\"/" $HOME/.zrchain/config/app.toml
+sed -i -e "s/^pruning-keep-recent *=.*/pruning-keep-recent = \"100\"/" $HOME/.zrchain/config/app.toml
+sed -i -e "s/^pruning-interval *=.*/pruning-interval = \"10\"/" $HOME/.zrchain/config/app.toml
+sed -i 's|minimum-gas-prices =.*|minimum-gas-prices = ""0urock"|g' $HOME/.zrchain/config/app.toml
+sed -i -e "s/^indexer *=.*/indexer = \"null\"/" $HOME/.zrchain/config/config.toml
+
 
 # set custom ports in app.toml
 sed -i.bak -e "s%:1317%:${N_PORT}317%g;
