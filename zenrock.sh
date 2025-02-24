@@ -1,17 +1,17 @@
 #!/bin/bash
-echo " "
-echo " "
-echo "   ____      _       ____             _      "
-echo "  / ___|___ (_)_ __ / ___|  ___ _   _(_)_ __ "
-echo " | |   / _ \| | '_ \\___ \ / _ \ | | | | '__|"
-echo " | |__| (_) | | | | |___) |  __/ |_| | | |   "
-echo "  \____\___/|_|_| |_|____/ \___|\__, |_|_|   "
-echo "                                |___/        "
-echo " "
-echo "Website : https://coinseyir.com "
-echo "Twitter / X : https://x.com/coinseyir "
-echo " "
-echo " "
+
+echo -e "\e[1;32m                
+   ____      _       ____             _      
+  / ___|___ (_)_ __ / ___|  ___ _   _(_)_ __ 
+ | |   / _ \| | '_ \\___ \ / _ \ | | | | '__|
+ | |__| (_) | | | | |___) |  __/ |_| | | |   
+  \____\___/|_|_| |_|____/ \___|\__, |_|_|   
+                                |___/    
+ + --------------------------------------------------------- +
+   X : https://x.com/coinseyir + Web : https://coinseyir.com
+ + --------------------------------------------------------- +
+\e[0m"
+sleep 2
 
 read -p "Enter WALLET name:" WALLET
 echo 'export WALLET='$WALLET
@@ -48,12 +48,17 @@ eval $(echo 'export PATH=$PATH:$HOME/go/bin' | tee -a $HOME/.profile)
  
 sleep 1  
 #
+cd $HOME
 mkdir -p $HOME/.zrchain/cosmovisor/genesis/bin
-wget -O $HOME/.zrchain/cosmovisor/genesis/bin/zenrockd https://releases.gardia.zenrocklabs.io/zenrockd-4.7.1
-chmod +x $HOME/.zrchain/cosmovisor/genesis/bin/zenrockd
-sudo ln -s $HOME/.zrchain/cosmovisor/genesis $HOME/.zrchain/cosmovisor/current -f
-sudo ln -s $HOME/.zrchain/cosmovisor/current/bin/zenrockd /usr/local/bin/zenrockd -f
-  
+wget -O zenrockd.zip https://github.com/Zenrock-Foundation/zrchain/releases/download/v5.3.8/zenrockd.zip
+unzip zenrockd.zip
+rm zenrockd.zip
+chmod +x $HOME/zenrockd
+mv $HOME/zenrockd $HOME/.zrchain/cosmovisor/genesis/bin/
+Copy
+sudo ln -sfn $HOME/.zrchain/cosmovisor/genesis $HOME/.zrchain/cosmovisor/current
+sudo ln -sfn $HOME/.zrchain/cosmovisor/current/bin/zenrockd /usr/local/bin/zenrockd
+
 sleep 1  
 #
 go install cosmossdk.io/tools/cosmovisor/cmd/cosmovisor@v1.6.0
