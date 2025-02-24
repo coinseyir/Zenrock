@@ -50,7 +50,7 @@ sleep 1
 #
 cd $HOME
 mkdir -p $HOME/.zrchain/cosmovisor/genesis/bin
-wget -O zenrockd.zip https://github.com/Zenrock-Foundation/zrchain/releases/download/v5.3.8/zenrockd.zip
+wget -O zenrockd.zip https://github.com/Zenrock-Foundation/zrchain/releases/download/v5.5.0/zenrockd.zip
 unzip zenrockd.zip
 rm zenrockd.zip
 chmod +x $HOME/zenrockd
